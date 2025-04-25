@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useHeadCategories } from "../../../actions/get";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { IoSearchOutline, IoMenu, IoClose } from "react-icons/io5";
+import {  IoMenu, IoClose } from "react-icons/io5";
 import { FaRegHeart, FaUser } from "react-icons/fa";
 import { IoBagOutline } from "react-icons/io5";
 import {
@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import SearchBox from "./SearchBox";
 
 const Navbar = () => {
   const { products, loading, error } = useHeadCategories();
@@ -33,7 +34,7 @@ const Navbar = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="w-full shadow-md">
+    <div className="w-full max-w-[1200px] mx-auto ">
       <div className="flex items-center justify-between h-16 px-4">
         <div className="flex items-center gap-4">
           <button
@@ -56,15 +57,7 @@ const Navbar = () => {
         <Link href={"/"} className="font-bold text-3xl text-pink-500">
           DREAM
         </Link>
-
-        <div className="hidden md:flex relative w-64">
-          <Input
-            className="w-full rounded-md border-2 border-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            type="text"
-            placeholder="bir şeyler ara.."
-          />
-          <IoSearchOutline className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-pink-950" />
-        </div>
+        <SearchBox/>
 
         <div className="flex flex-row gap-6">
 

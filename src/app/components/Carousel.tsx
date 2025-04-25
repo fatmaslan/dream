@@ -39,7 +39,7 @@ const CarouselDApiDemo = () => {
         <CarouselContent className="gap-2">
           {carousel.images.map((img) => (
             <CarouselItem key={img.id} className="w-full">
-              <Card className="w-full border-none shadow-none">
+              <Card className="w-full border-none shadow-none p-0">
                 <CardContent className="relative w-full h-[400px] p-0">
                   <Image
                     src={

@@ -9,6 +9,17 @@ interface ProductImage {
   images: string;
   
 }
+interface Image {
+  id: number;
+  image: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+  images: Image[];
+}
+
 
 interface ProductProps {
   id: number;
@@ -16,7 +27,6 @@ interface ProductProps {
   description: string;
   price: number;
   images: ProductImage[] ;
-  
 }
 
 export const useHeadCategories = () => {
@@ -72,4 +82,59 @@ export const useCarousel = () => {
   }, []);
 
   return { carousel, loading, error };
+};
+export const useCategories = () => {
+  const [categories, setCategories] = useState<Category[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/categories/");
+        setCategories(response.data);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Bilinmeyen bir hata oluştu.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { categories, loading, error };
+};
+
+export const useDirectories = () => {
+  const [directories, setDirectories] = useState<Category[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/directories/");
+        setDirectories(response.data);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Bilinmeyen bir hata oluştu.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { directories, loading, error };
 };
