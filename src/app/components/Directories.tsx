@@ -16,7 +16,7 @@ const Directories = () => {
     <div className="mt-10 grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 px-4 w-full max-w-[1200px] mx-auto">
       {directories.map((directory) => (
         <Link key={directory.id} href={`/category/${directory.id}`}>
-          <div className="relative md:w-[550px] md:h-[200px] w-[300px] h-[100px] gap-8">
+          <div className="relative md:w-[550px] md:h-[200px] w-[350px] h-[100px] gap-8">
             {directory.images && directory.images.length > 0 ? (
               <Image
                 src={directory.images[0].image}

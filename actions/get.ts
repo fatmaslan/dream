@@ -12,8 +12,15 @@ interface ProductImage {
 interface Image {
   id: number;
   image: string;
+  img: string;
 }
 
+
+interface Subcat {
+  id: number;
+  name: string;
+  images: Image[];
+}
 interface Category {
   id: number;
   name: string;
@@ -137,4 +144,88 @@ export const useDirectories = () => {
   }, []);
 
   return { directories, loading, error };
+};
+export const useSubCategories = () => {
+  const [subCategories, setSubCategories] = useState<Subcat | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/subcategories/1/");
+        setSubCategories(response.data);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Bilinmeyen bir hata oluştu.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { subCategories, loading, error };
+};
+
+
+export const useBrowsers = () => {
+  const [browsers, setBrowsers] = useState<Category[]  | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/browser/");
+        setBrowsers(response.data);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Bilinmeyen bir hata oluştu.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { browsers, loading, error };
+};
+
+export const useApps = () => {
+  const [apps, setApps] = useState<Category[]  | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/app/");
+        setApps(response.data);
+      } catch (error) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Bilinmeyen bir hata oluştu.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { apps, loading, error };
 };
