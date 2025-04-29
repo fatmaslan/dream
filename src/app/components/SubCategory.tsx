@@ -2,6 +2,7 @@
 import React from "react";
 import { useSubCategories } from "../../../actions/get";
 import Image from "next/image";
+import Link from "next/link";
 
 
 const SubCategories = () => {
@@ -15,7 +16,8 @@ const SubCategories = () => {
     <div className="p-4 w-full max-w-[1200px] mx-auto md:mt-25 mt-10 grid grid-cols-2 md:grid-cols-4 gap-8 px-4">
       
       {subCategories.images.map((img) => (
-          <div key={img.id} className="relative md:w-[230px] md:h-[400px] w-[150px] h-[400px] ">
+        <Link key={img.id} href={`/subCategory/${img.id}`} className="flex flex-col items-center justify-center">  
+          <div className="relative md:w-[230px] md:h-[400px] w-[150px] h-[400px] ">
             <Image
               src={img.image}
               alt={subCategories.name}
@@ -23,6 +25,7 @@ const SubCategories = () => {
               className="object-cover rounded-lg"
             />
           </div>
+          </Link>
         ))}
       </div>
    

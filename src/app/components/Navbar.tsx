@@ -54,7 +54,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <Link href={"/"} className="font-bold text-3xl text-pink-500">
+        <Link href={"/"} className="font-bold text-3xl text-pink-500 ">
           DREAM
         </Link>
         <SearchBox/>
