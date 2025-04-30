@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useHeadCategories } from "../../../actions/get";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import {  IoMenu, IoClose } from "react-icons/io5";
+import { IoMenu, IoClose } from "react-icons/io5";
 import { FaRegHeart, FaUser } from "react-icons/fa";
 import { IoBagOutline } from "react-icons/io5";
 import {
@@ -24,16 +24,47 @@ import {
 } from "@/components/ui/dialog";
 import SearchBox from "./SearchBox";
 
+import { Loader2 } from "lucide-react";
+import { useLogin } from "../context/AuthContext";
+
 const Navbar = () => {
   const { products, loading, error } = useHeadCategories();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { loginUser } = useLogin();
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
+ 
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const res = await loginUser({ email, password });
+
+      if (res) {
+        setIsLoginOpen(false);
+        router.push("/account"); // giriş sonrası yönlendirme
+      }
+    } catch (err) {
+      console.error("Giriş hatası:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleUserClick = () => {
+    const token = localStorage.getItem("access");
+    if (token) {
+      router.push("/account");
+    } else {
+      setIsLoginOpen(true);
+    }
+  };
   return (
+    <div className=" border-b fixed top-0 bg-white z-50 w-full"> 
     <div className="w-full max-w-[1200px] mx-auto ">
       <div className="flex items-center justify-between h-16 px-4">
         <div className="flex items-center gap-4">
@@ -45,11 +76,11 @@ const Navbar = () => {
           </button>
           <div className="hidden md:flex flex-row gap-6">
             {products?.map((product) => (
-              <div key={product.id}>
+              <Link  key={product.id} href={`/category/${product.id}`}>
                 <h2 className="text-lg text-pink-400 hover:bg-pink-100 h-10 flex items-center justify-center p-3">
                   {product.name}
                 </h2>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -57,10 +88,9 @@ const Navbar = () => {
         <Link href={"/"} className="font-bold text-3xl text-pink-500 ">
           DREAM
         </Link>
-        <SearchBox/>
+        <SearchBox />
 
         <div className="flex flex-row gap-6">
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="cursor-pointer flex items-center gap-2 hover:text-green-950">
@@ -81,10 +111,8 @@ const Navbar = () => {
               </Button>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div
-            className="cursor-pointer flex items-center gap-2 hover:text-green-950"
-            onClick={() => setIsLoginOpen(true)}
-          >
+          <div onClick={handleUserClick} className="cursor-pointer flex items-center gap-2 hover:text-green-950">
+          
             <FaUser size={24} />
           </div>
 
@@ -134,16 +162,32 @@ const Navbar = () => {
           <div className="flex flex-col gap-4">
             <Input
               placeholder="E-posta adresinizi giriniz"
-              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              name="email"
               className="outline-none border border-transparent focus:border-transparent focus:ring-0 w-full rounded-md text-pink-950 px-2 py-2"
             />
             <Input
               placeholder="Şifrenizi giriniz"
-              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              name="password"
               className="outline-none border border-transparent focus:border-transparent focus:ring-0 w-full rounded-md text-pink-950 px-2 py-2"
             />
-            <Button className="w-full bg-pink-100 text-pink-950 hover:bg-pink-950 hover:text-white transition-all">
-              Giriş Yap
+            <Button
+              onClick={handleLogin}
+              disabled={isLoading}
+              type="submit"
+              className="w-full bg-gray-600 text-white  dark:bg-gray-300 dark:text-red-600"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  Giriş yapılıyor...
+                </>
+              ) : (
+                <>Giriş Yap</>
+              )}
             </Button>
           </div>
           <DialogFooter>
@@ -156,6 +200,7 @@ const Navbar = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </div>
     </div>
   );
 };

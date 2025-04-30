@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
+import {  LoginProvider, RegisterProvider } from "./context/AuthContext";
 
 export const metadata: Metadata = {
   title: "dream",
@@ -17,14 +17,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-    
-      >
-        <Navbar/>
-        <div className="flex flex-col min-h-screen"> 
-        {children}
-        </div>
-        <Footer/>
+      <body>
+      <RegisterProvider>
+        <LoginProvider>
+        <Navbar />
+        
+          <div className="flex flex-col min-h-screen">{children}</div>
+        
+        <Footer />
+        </LoginProvider>
+        </RegisterProvider>
+       
       </body>
     </html>
   );

@@ -46,15 +46,15 @@ const Detailpage = () => {
     setQuantity((prev) => prev + 1);
   };
   return (
-    <div className="p-3 w-full max-w-[1200px] mx-auto">
+    <div className="p-3 w-full max-w-[1200px] mx-auto mt-16">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         <div className="w-full">
           <Carousel plugins={[plugin.current]} className="w-full rounded-xl">
             <CarouselContent className="gap-4">
               {product.images.map((img) => (
                 <CarouselItem key={img.id} className="w-full">
-                  <Card className="w-full border-none shadow-none dark:bg-none">
-                    <CardContent className="relative light:bg-gray-100 w-[500px] h-[600px] p-3 rounded-lg">
+                  <Card className="w-full border-none">
+                    <CardContent className="relative w-[500px] h-[600px] p-3 rounded-lg">
                       <Image
                         src={img.images}
                         alt={`Ürün resmi ${img.id}`}

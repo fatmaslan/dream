@@ -16,66 +16,49 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import {useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useLogin } from "@/app/context/AuthContext";
+import { useRouter } from "next/navigation";
+
 
 const formSchema = z.object({
   email: z.string().email("Geçerli bir e-posta adresi girin."),
   password: z.string().min(6, "Şifre en az 6 karakter olmalidir."),
 });
 
-const Registerpage = () => {
-  const router = useRouter();
+const Loginpage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
+      
     },
   });
+  const router = useRouter();
+  const { loginUser } = useLogin();
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    setErrorMessage("");
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/login/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Giriş başarisiz. Lütfen bilgilerinizi kontrol ediniz.");
-      }
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  setIsLoading(true);
+  const { email, password } = values;
 
+  const result = await loginUser({ email, password });
 
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
-
-      router.push("/");
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage("Bir hata oluştu.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+  if (result) {
+    router.push("/");
   }
+
+  setIsLoading(false);
+};
   return (
-    <div className="mt-28 sm:mx-auto">
-      <div className="max-w-md sm:mx-auto sm:w-full sm:rounded-lg sm:shadow-lg sm:overflow-hidden sm:bg-white sm:p-8">
-        <h2 className="flex items-center justify-center font-bold text-2xl mb-10 text-pink-900">
+    <div className=" p-3 w-full max-w-[1200px] mx-auto mt-26">
+      <div className="mx-auto rounded-lg shadow-lg overflow-hidden bg-white md:w-[500px] w-[300px] p-5  ">
+        <h2 className="flex items-center justify-center font-bold sm:text-2xl text-md mb-10 text-pink-900">
           Giriş yapmak için doldurunuz
         </h2>
-        {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -115,7 +98,7 @@ const Registerpage = () => {
               )}
             />
 
-            <Button  disabled={isLoading} type="submit">
+            <Button  disabled={isLoading} type="submit" className="w-full bg-gray-600 text-white  dark:bg-gray-300 dark:text-red-600">
             {isLoading ? (
                 <>
                 <Loader2 size={20} className="animate-spin"/>
@@ -140,4 +123,4 @@ const Registerpage = () => {
   );
 };
 
-export default Registerpage;
+export default Loginpage;

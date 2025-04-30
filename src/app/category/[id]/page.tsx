@@ -20,7 +20,7 @@ const CategoryDetail = () => {
     );
   }
   return (
-    <div className="p-3 flex flex-row items-center justify-center w-full max-w-[1200px] mx-auto">
+    <div className="p-3 flex flex-row items-center justify-center w-full max-w-[1200px] mx-auto mt-16">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {category.map((product) => {
           const image_url = product.image
@@ -32,7 +32,7 @@ const CategoryDetail = () => {
             <Link
               href={`/product/${product.id}`}
               key={product.id}
-              className="relative group bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg"
+              className="relative group bg-white rounded-lg overflow-hidden transition-all duration-300 "
             >
               <div className="relative w-60 h-90 p-2">
                 <Image
