@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import {  LoginProvider, RegisterProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 
 export const metadata: Metadata = {
   title: "dream",
@@ -20,11 +21,13 @@ export default function RootLayout({
       <body>
       <RegisterProvider>
         <LoginProvider>
+          <CartProvider>
         <Navbar />
         
           <div className="flex flex-col min-h-screen">{children}</div>
         
         <Footer />
+        </CartProvider>
         </LoginProvider>
         </RegisterProvider>
        
