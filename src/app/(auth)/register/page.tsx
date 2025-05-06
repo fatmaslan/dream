@@ -18,7 +18,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
-import { useRegister } from "@/app/context/AuthContext";
+import { useRegister } from "@/app/context/RegisterContext";
 
 
 const formSchema = z

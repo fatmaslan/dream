@@ -1,110 +1,59 @@
-"use client"
-import { createContext, useContext, useState, ReactNode } from "react";
-import axios from "axios";
+// context/AuthContext.tsx
+"use client";
 
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-type RegisterContextType = {
-  registerUser: (formData: { username: string; email: string; password: string }) => Promise<void | any>;
-  loading: boolean;
-  error: string | null;
-  success: boolean;
+type UserType = {
+  id: number;
+  email: string;
+  username: string;
 };
 
-
-const defaultValue: RegisterContextType = {
-  registerUser: async () => {},
-  loading: false,
-  error: null,
-  success: false,
+type AuthContextType = {
+  user: UserType | null;
+  setUser: (user: UserType | null) => void;
+  accessToken: string | null;
+  setAccessToken: (token: string | null) => void;
 };
 
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  setUser: () => {},
+  accessToken: null,
+  setAccessToken: () => {},
+});
 
-const RegisterContext = createContext<RegisterContextType>(defaultValue);
-
-
-export const RegisterProvider = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-
-  const registerUser = async (formData: { username: string; email: string; password: string }) => {
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/register/", formData);
-      setSuccess(true);
-      return response.data;
-    } catch (err: any) {
-      setError(err.response?.data || "Bir hata oluştu.");
-    } finally {
-      setLoading(false);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<UserType | null>(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      return storedUser ? JSON.parse(storedUser) : null;
     }
-  };
+    return null;
+  });
+  const [accessToken, setAccessToken] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("access");
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    // Sayfa yenilendiğinde localStorage'dan geri yükle
+    const storedUser = localStorage.getItem("user");
+    const storedAccessToken = localStorage.getItem("access");
+    if (storedUser && storedAccessToken) {
+      setAccessToken(storedAccessToken);
+      setUser(JSON.parse(storedUser));
+      
+    }
+  }, []);
 
   return (
-    <RegisterContext.Provider value={{ registerUser, loading, error, success }}>
+    <AuthContext.Provider value={{ user, setUser, accessToken, setAccessToken }}>
       {children}
-    </RegisterContext.Provider>
-  );
-};
-// 5. Hook (dışa aktarım)
-export const useRegister = () => useContext(RegisterContext);
-
-
-
-//login
-
-
-type LoginContextType = {
-  loginUser: (formData: { email: string; password: string }) => Promise<void | any>;
-  loading: boolean;
-  error: string | null;
-  success: boolean;
-};
-
-const defaultValues: LoginContextType = {
-  loginUser: async () => {},
-  loading: false,
-  error: null,
-  success: false,
-};
-
-const LoginContext = createContext<LoginContextType>(defaultValues);
-
-export const LoginProvider = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
-
-  const loginUser = async (formData: { email: string; password: string }) => {
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-  
-    try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login/", formData);
-  
-      const { access, user } = response.data; // JWT token ve kullanıcı bilgisi
-  
-      // LocalStorage’a token ve kullanıcıyı kaydet
-      localStorage.setItem("access", access);
-      localStorage.setItem("user", JSON.stringify(user));
-  
-      setSuccess(true);
-      return response.data;
-    } catch (err: any) {
-      setError(err.response?.data || "Bir hata oluştu.");
-    } finally {
-      setLoading(false);
-    }
-  };
-  return (
-    <LoginContext.Provider value={{ loginUser, loading, error, success }}>
-      {children}
-    </LoginContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export const useLogin = () => useContext(LoginContext);
+export const useAuth = () => useContext(AuthContext);

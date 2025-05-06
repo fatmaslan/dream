@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import {  LoginProvider, RegisterProvider } from "./context/AuthContext";
+import Footer from "./components/Footer";  
 import { CartProvider } from "./context/CartContext";
+import { LoginProvider } from "./context/LoginContext";
+import { AuthProvider } from "./context/AuthContext";
 
 export const metadata: Metadata = {
   title: "dream",
@@ -19,8 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <RegisterProvider>
+      <AuthProvider>
+      
         <LoginProvider>
+       
           <CartProvider>
         <Navbar />
         
@@ -28,10 +31,14 @@ export default function RootLayout({
         
         <Footer />
         </CartProvider>
+        
         </LoginProvider>
-        </RegisterProvider>
-       
+      
+       </AuthProvider>
       </body>
     </html>
   );
 }
+
+
+

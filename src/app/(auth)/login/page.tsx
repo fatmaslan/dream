@@ -17,8 +17,9 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import {useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useLogin } from "@/app/context/AuthContext";
+
 import { useRouter } from "next/navigation";
+import { useLogin } from "@/app/context/LoginContext";
 
 
 const formSchema = z.object({
@@ -41,18 +42,18 @@ const Loginpage = () => {
   const router = useRouter();
   const { loginUser } = useLogin();
 
-const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  setIsLoading(true);
-  const { email, password } = values;
-
-  const result = await loginUser({ email, password });
-
-  if (result) {
-    router.push("/");
-  }
-
-  setIsLoading(false);
-};
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    const { email, password } = values;
+  
+    const result = await loginUser({ email, password });
+  
+    if (result) {
+      router.push("/");
+    }
+  
+    setIsLoading(false);
+  };
   return (
     <div className=" p-3 w-full max-w-[1200px] mx-auto mt-26">
       <div className="mx-auto rounded-lg shadow-lg overflow-hidden bg-white md:w-[500px] w-[300px] p-5  ">
